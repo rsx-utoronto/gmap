@@ -7,6 +7,7 @@
 import rospy
 
 from sensor_msgs.msg import NavSatFix
+from inertial_sense.msg import GPS
 
 import gobject
 import re
@@ -1224,13 +1225,14 @@ class MainWindow(gtk.Window):
         dThread.start()
        
     def callbackGPS(self, data):
-    	#coord=[]
-    	#coord.append(data.latitude)
-    	#coord.append(data.longitude)
-    	#coord.append(data.altitude)
-    	
+    	coord=[]
+	zoom = int(self.scale.get_value())
+    	coord.append(data.latitude)
+    	coord.append(data.longitude)
+    	coord.append(zoom)
+   
     	#coord type is tuple
-    	coord = (data.latitude, data.longitude, data.altitude)
+    	#coord = (data.latitude, data.longitude, zoom)
     	
     	#adds marker onto the map
     	self.marker.append_marker(coord)
@@ -1349,8 +1351,9 @@ class MainWindow(gtk.Window):
        	rospy.init_node('maps', anonymous=True)
        	#subscribes to gps topic with msg type NavSatFix
        	#creates marker with callbackGPS
-        rospy.Subscriber('/gps', NavSatFix, self.callbackGPS)
-        self.pub = rospy.Publisher('/map', NavSatFix, queue_size=10)
+        rospy.Subscriber('/nav', NavSatFix, self.callbackGPS)
+	rospy.Subscriber('/gps', GPS, self.callbackGPS)     
+	#self.pub = rospy.Publisher('/map', NavSatFix, queue_size=10)
 
 
 def main(conf_path):
