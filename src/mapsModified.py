@@ -1353,7 +1353,7 @@ class MainWindow(gtk.Window):
        	#creates marker with callbackGPS
         rospy.Subscriber('/nav', NavSatFix, self.callbackGPS)
 	rospy.Subscriber('/gps', GPS, self.callbackGPS)     
-	#self.pub = rospy.Publisher('/map', NavSatFix, queue_size=10)
+	self.pub = rospy.Publisher('/map', NavSatFix, queue_size=10)
 
 
 def main(conf_path):
