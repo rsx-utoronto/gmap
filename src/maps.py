@@ -516,7 +516,11 @@ class MainWindow(gtk.Window):
         elif strName == DA_MENU[EXPORT_MAP]:
             self.show_export(self.myPointer)
         elif strName == DA_MENU[ADD_MARKER]:
+            print("Added")
             self.add_marker(self.myPointer)
+	elif strName == DA_MENU[ADD_LANDMARK]:
+	    print("Here")
+	    self.add_marker(self.myPointer, True)
         elif strName == DA_MENU[MOUSE_LOCATION]:
             self.mouse_location(self.myPointer)
         elif strName == DA_MENU[GPS_LOCATION]:
@@ -561,10 +565,10 @@ class MainWindow(gtk.Window):
             clipboard.set_text("No GPS location detected.")
 
     ## Add a marker
-    def add_marker(self, pointer=None):
+    def add_marker(self, pointer=None, LandMark = False):
     	#change to rover position
         coord = self.pointer_to_world_coord(pointer)
-        self.marker.append_marker(coord)
+        self.marker.append_marker(coord, landmark = LandMark)
         self.refresh()
 
     ## Show the bottom panel with the export

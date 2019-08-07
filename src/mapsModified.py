@@ -523,6 +523,8 @@ class MainWindow(gtk.Window):
             self.show_export(self.myPointer)
         elif strName == DA_MENU[ADD_MARKER]:
             self.add_marker(self.myPointer)
+	elif strName == DA_MENU[ADD_LANDMARK]:
+	    self.add_marker(self.myPointer, True)
         elif strName == DA_MENU[MOUSE_LOCATION]:
             self.mouse_location(self.myPointer)
         elif strName == DA_MENU[GPS_LOCATION]:
@@ -567,7 +569,7 @@ class MainWindow(gtk.Window):
             clipboard.set_text("No GPS location detected.")
 
     ## Add a marker
-    def add_marker(self, pointer=None):
+    def add_marker(self, pointer=None, landmark_in = False):
         coord = self.pointer_to_world_coord(pointer)
         
     	rate = rospy.Rate(10) 
@@ -580,7 +582,7 @@ class MainWindow(gtk.Window):
         rospy.loginfo(coordinates)
         self.pub.publish(coordinates)
         
-        self.marker.append_marker(coord)
+        self.marker.append_marker(coord, landmark = landmark_in)
         self.refresh()
     	
 
@@ -1151,6 +1153,7 @@ class MainWindow(gtk.Window):
 
     ## Final actions before main_quit
     def on_delete(self, *args):
+	self.marker.delete_all()
         self.drawing_area.stop()
         self.unfullscreen()
         self.unmaximize()
@@ -1351,7 +1354,7 @@ class MainWindow(gtk.Window):
        	rospy.init_node('maps', anonymous=True)
        	#subscribes to gps topic with msg type NavSatFix
        	#creates marker with callbackGPS
-        rospy.Subscriber('/nav', NavSatFix, self.callbackGPS)
+        #rospy.Subscriber('/nav', NavSatFix, self.callbackGPS)
 	rospy.Subscriber('/gps', GPS, self.callbackGPS)     
 	self.pub = rospy.Publisher('/map', NavSatFix, queue_size=10)
 
